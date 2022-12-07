@@ -1,0 +1,28 @@
+{
+	"name": "ratio-terminal",
+	"version": "1.0.0",
+	"description": "Accepts or Declines your ratios in Discord.",
+	"main": "index.js",
+	"scripts": {
+		"start": "node .",
+		"deploy": "node deploy.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Peroxaan/ratio-terminal.git"
+	},
+	"author": "Peroxaan Studios",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/Peroxaan/ratio-terminal/issues"
+	},
+	"homepage": "https://github.com/Peroxaan/ratio-terminal#readme",
+	"dependencies": {
+		"discord.js": "^14.7.1"
+	},
+	"devDependencies": {
+		"eslint": "^8.29.0",
+		"eslint-config-prettier": "^8.5.0",
+		"prettier": "^2.8.0"
+	}
+}
