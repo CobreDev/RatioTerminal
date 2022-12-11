@@ -1,19 +1,17 @@
 import { Message } from "discord.js";
 import { sharedPrismaClient } from "../../helpers/Prisma/sharedClient";
 import { ACCEPTED_PNG, DENIED_PNG } from "../../constants";
-import * as fs from 'fs';
+import * as fs from "fs";
 
 export const handleMessageCreate = async (message: Message) => {
 	const ratioRegex = /\b(rati|coun)(o|ou|a|ai)+(s|t|er)?\b/i;
 
-	console.log(message.content);
+	if (message.author.bot) return;
 
 	const isMatch = ratioRegex.test(message.content);
-	if(isMatch) {
+	if (isMatch) {
 		// Get ratio odds KV for user
 		const configFile = fs.readFileSync("./src/store/kv/odds", "utf-8");
-
-
 
 		let percentOdds: number = 50;
 
@@ -27,14 +25,14 @@ export const handleMessageCreate = async (message: Message) => {
 			}
 		}
 
-		const isRatio = (Math.random() > (percentOdds / 100))
+		const isRatio = Math.random() > percentOdds / 100;
 
-		if(isRatio) {
+		if (isRatio) {
 			// No ratio 😔
-			await message.react("👎")
+			await message.react("👎");
 			await message.reply({
-				content: DENIED_PNG
-			})
+				content: DENIED_PNG,
+			});
 
 			// Create ratio log
 			await sharedPrismaClient.ratios.create({
@@ -45,19 +43,19 @@ export const handleMessageCreate = async (message: Message) => {
 					accepted: false,
 					wasRigged: percentOdds === 50,
 					rigOdds: percentOdds === 50 ? null : percentOdds,
-					createdOn: new Date()
-				}
+					createdOn: new Date(),
+				},
 			});
 
 			const user = message.client.users.cache.get(message.author.id);
 
 			await sharedPrismaClient.users.upsert({
 				where: {
-					userID: message.author.id
+					userID: message.author.id,
 				},
 				update: {
 					lCount: {
-						increment: 1
+						increment: 1,
 					},
 					updatedOn: new Date(),
 				},
@@ -68,14 +66,13 @@ export const handleMessageCreate = async (message: Message) => {
 					wCount: 0,
 					lCount: 1,
 					createdOn: new Date(),
-				}
+				},
 			});
-		}
-		else {
+		} else {
 			// Ratio 😄
-			await message.react("👍")
+			await message.react("👍");
 			await message.reply({
-				content: ACCEPTED_PNG
+				content: ACCEPTED_PNG,
 			});
 
 			// Create ratio log for leaderboard
@@ -87,19 +84,19 @@ export const handleMessageCreate = async (message: Message) => {
 					accepted: true,
 					wasRigged: percentOdds === 50,
 					rigOdds: percentOdds === 50 ? null : percentOdds,
-					createdOn: new Date()
-				}
+					createdOn: new Date(),
+				},
 			});
 
 			const user = message.client.users.cache.get(message.author.id);
 
 			await sharedPrismaClient.users.upsert({
 				where: {
-					userID: message.author.id
+					userID: message.author.id,
 				},
 				update: {
 					wCount: {
-						increment: 1
+						increment: 1,
 					},
 					updatedOn: new Date(),
 				},
@@ -110,10 +107,8 @@ export const handleMessageCreate = async (message: Message) => {
 					wCount: 1,
 					lCount: 0,
 					createdOn: new Date(),
-				}
+				},
 			});
 		}
-
-
 	}
-}
+};

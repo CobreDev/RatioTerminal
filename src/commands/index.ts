@@ -1,8 +1,14 @@
-import { ChatCommand, InteractionButtonCommand, MessageCommand, UserCommand } from "../types/Discord";
+import {
+	ChatCommand,
+	InteractionButtonCommand,
+	MessageCommand,
+	UserCommand,
+} from "../types/Discord";
 import { Rig } from "./admin/rig";
 import { Leaderboard } from "./admin/util/leaderboard";
+import { Stats } from "./admin/util/stats";
 
-export const chatCommands: ChatCommand[] = [Rig, Leaderboard];
+export const chatCommands: ChatCommand[] = [Rig, Leaderboard, Stats];
 
 export const messageCommands: MessageCommand[] = [];
 
@@ -37,7 +43,7 @@ export const userCommandsMap = new Map<string, UserCommand>(
 export const buttonInteractionsMap = new Map<string, InteractionButtonCommand>(
 	Object.entries(
 		buttonInteractions.reduce((all, interaction) => {
-			return { ...all, [interaction.customId]: interaction};
+			return { ...all, [interaction.customId]: interaction };
 		}, {} as Record<string, InteractionButtonCommand>)
 	)
-)
+);

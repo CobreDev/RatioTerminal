@@ -3,13 +3,13 @@ import {
 	ChatInputCommandInteraction,
 	Interaction,
 	MessageContextMenuCommandInteraction,
-	UserContextMenuCommandInteraction
+	UserContextMenuCommandInteraction,
 } from "discord.js";
 import {
 	buttonInteractionsMap,
 	chatCommandsMap,
 	messageCommandsMap,
-	userCommandsMap
+	userCommandsMap,
 } from "../../commands";
 
 export async function handleInteraction(
@@ -96,7 +96,7 @@ export async function handleMessageInteraction(
 	} catch (e: any) {
 		await interaction.reply({
 			content: `${e.message}`,
-			ephemeral: true
+			ephemeral: true,
 		});
 		console.log(e);
 	}
@@ -107,7 +107,7 @@ export async function handleButtonInteraction(
 ): Promise<void> {
 	const command = buttonInteractionsMap.get(interaction.customId);
 
-	if(!command) return;
+	if (!command) return;
 
 	const inhibitors = Array.isArray(command.inhibitors)
 		? command.inhibitors
@@ -119,8 +119,7 @@ export async function handleButtonInteraction(
 		}
 
 		await command.run(interaction);
-	}
-	catch(e) {
+	} catch (e) {
 		console.log(e);
 	}
 }

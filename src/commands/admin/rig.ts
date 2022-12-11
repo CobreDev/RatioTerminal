@@ -1,5 +1,8 @@
 import { ChatCommand } from "../../types/Discord";
-import { ApplicationCommandOptionType, ApplicationCommandType } from "discord.js";
+import {
+	ApplicationCommandOptionType,
+	ApplicationCommandType,
+} from "discord.js";
 import { ownerOnly } from "../../inhibitors/ownerOnly";
 import { promises as fs } from "fs";
 
@@ -13,16 +16,17 @@ export const Rig: ChatCommand = {
 			name: "user",
 			description: "The user to rig odds for",
 			type: ApplicationCommandOptionType.User,
-			required: true
+			required: true,
 		},
 		{
 			name: "odds",
-			description: "The odds for the user. 0 = always lose, 100 = always win",
+			description:
+				"The odds for the user. 0 = always lose, 100 = always win",
 			type: ApplicationCommandOptionType.Number,
 			min_value: 0,
 			max_value: 100,
-			required: true
-		}
+			required: true,
+		},
 	],
 	async run(interaction) {
 		const userID = interaction.options.get("user")?.value?.toString()!;
@@ -40,11 +44,19 @@ export const Rig: ChatCommand = {
 				if (kvSplit[0] === userID) {
 					found = true;
 
-					await fs.writeFile("./src/store/kv/odds", oddsFile.replace(`${userID}:${kvSplit[1]}`, `${userID}:${odds}`));
+					await fs.writeFile(
+						"./src/store/kv/odds",
+						oddsFile.replace(
+							`${userID}:${kvSplit[1]}`,
+							`${userID}:${odds}`
+						)
+					);
 
-					const user = await interaction.client.users.cache.get(userID);
+					const user = await interaction.client.users.cache.get(
+						userID
+					);
 					await interaction.reply({
-						content: `Success! Set ${user?.username}#${user?.discriminator}'s odds to ${odds}%`
+						content: `Success! Set ${user?.username}#${user?.discriminator}'s odds to ${odds}%`,
 					});
 
 					break;
@@ -58,8 +70,8 @@ export const Rig: ChatCommand = {
 
 			const user = await interaction.client.users.cache.get(userID);
 			await interaction.reply({
-				content: `Success! Set ${user?.username}#${user?.discriminator}'s odds to ${odds}%`
+				content: `Success! Set ${user?.username}#${user?.discriminator}'s odds to ${odds}%`,
 			});
 		}
-	}
+	},
 };

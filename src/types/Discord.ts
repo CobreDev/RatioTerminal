@@ -6,7 +6,9 @@ import {
 	MessageContextMenuCommandInteraction,
 	MessageApplicationCommandData,
 	UserApplicationCommandData,
-	UserContextMenuCommandInteraction, InteractionButtonComponentData, ButtonInteraction
+	UserContextMenuCommandInteraction,
+	InteractionButtonComponentData,
+	ButtonInteraction,
 } from "discord.js";
 
 export interface ChatCommand extends ChatInputApplicationCommandData {
@@ -33,7 +35,8 @@ export interface UserCommand extends UserApplicationCommandData {
 	run(interaction: UserContextMenuCommandInteraction): Promise<void>;
 }
 
-export interface InteractionButtonCommand extends InteractionButtonComponentData {
+export interface InteractionButtonCommand
+	extends InteractionButtonComponentData {
 	inhibitors: Inhibitor[] | Inhibitor;
 	run(interaction: ButtonInteraction): Promise<void>;
 }

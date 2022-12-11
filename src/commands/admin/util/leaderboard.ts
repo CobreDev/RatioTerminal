@@ -1,5 +1,9 @@
 import { ChatCommand } from "../../../types/Discord";
-import { ApplicationCommandOptionType, ApplicationCommandType, EmbedBuilder } from "discord.js";
+import {
+	ApplicationCommandOptionType,
+	ApplicationCommandType,
+	EmbedBuilder,
+} from "discord.js";
 import { sharedPrismaClient } from "../../../helpers/Prisma/sharedClient";
 import { PEROXAAN_COLOR } from "../../../constants";
 import { User } from "../../../types/Leaderboard";
@@ -14,7 +18,7 @@ export const Leaderboard: ChatCommand = {
 			name: "global",
 			description: "Get a global leaderboard",
 			type: ApplicationCommandOptionType.Boolean,
-			required: true
+			required: true,
 		},
 		{
 			name: "sort",
@@ -23,80 +27,76 @@ export const Leaderboard: ChatCommand = {
 			choices: [
 				{
 					name: "W's",
-					value: "w"
+					value: "w",
 				},
 				{
 					name: "L's",
-					value: "l"
-				}
+					value: "l",
+				},
 			],
-			required: true
-		}
+			required: true,
+		},
 	],
 	async run(interaction) {
 		const global = interaction.options.get("global")?.value === "true";
 		const sortTop: boolean = interaction.options.get("sort")?.value === "w";
 
 		if (global) {
-			if(sortTop) {
+			if (sortTop) {
 				const topWinners = await sharedPrismaClient.users.findMany({
 					take: 10,
 					orderBy: {
-						wCount: 'desc'
-					}
+						wCount: "desc",
+					},
 				});
 
 				const winnersEmbed = new EmbedBuilder()
 					.setColor(`${PEROXAAN_COLOR}`)
-					.setTitle("Here are the ten biggest W takers!")
+					.setTitle("Here are the ten biggest W takers globally! 🏆")
 					.setTimestamp(new Date());
 
-				for (let i=0; i < topWinners.length; i++) {
+				for (let i = 0; i < topWinners.length; i++) {
 					winnersEmbed.addFields([
 						{
-							name: `#${i+1} - ${topWinners[i].username}#${topWinners[i].discriminator}`,
-							value: `Number of Ws: ${topWinners[i].wCount}`
-						}
-					])
+							name: `#${i + 1} - ${topWinners[i].username}#${
+								topWinners[i].discriminator
+							}`,
+							value: `Number of Ws: ${topWinners[i].wCount}`,
+						},
+					]);
 				}
 
 				await interaction.reply({
-					embeds: [
-						winnersEmbed
-					]
+					embeds: [winnersEmbed],
 				});
-			}
-			else {
+			} else {
 				const topLosers = await sharedPrismaClient.users.findMany({
 					take: 10,
 					orderBy: {
-						lCount: 'desc'
-					}
+						lCount: "desc",
+					},
 				});
 
 				const losersEmbed = new EmbedBuilder()
 					.setColor(`${PEROXAAN_COLOR}`)
-					.setTitle("Here are the ten biggest L takers!")
+					.setTitle("Here are the ten biggest L takers globally! ❌")
 					.setTimestamp(new Date());
 
-				for (let i=0; i < topLosers.length; i++) {
+				for (let i = 0; i < topLosers.length; i++) {
 					losersEmbed.addFields([
 						{
 							name: `#${i} - ${topLosers[i].username}#${topLosers[i].discriminator}`,
-							value: `Number of Ls: ${topLosers[i].lCount}`
-						}
-					])
+							value: `Number of Ls: ${topLosers[i].lCount}`,
+						},
+					]);
 				}
 
 				await interaction.reply({
-					embeds: [
-						losersEmbed
-					]
+					embeds: [losersEmbed],
 				});
 			}
-		}
-		else {
-			if(sortTop) {
+		} else {
+			if (sortTop) {
 				const allGuildWs = await sharedPrismaClient.ratios.findMany({
 					where: {
 						guildID: interaction.guildId!,
@@ -107,53 +107,61 @@ export const Leaderboard: ChatCommand = {
 				let ratioArr: User[] = [];
 
 				for (const i of allGuildWs) {
-					const user = await interaction.client.users.cache.get(i.userID);
+					const user = await interaction.client.users.cache.get(
+						i.userID
+					);
 
-					let userExists = ratioArr.findIndex(user => user.userID === i.userID);
+					let userExists = ratioArr.findIndex(
+						(user) => user.userID === i.userID
+					);
 
-					if(ratioArr[userExists]) {
-						i.accepted ? ratioArr[userExists].wCount += 1 : ratioArr[userExists].lCount += 1;
-					}
-					else {
-						if(user) {
+					if (ratioArr[userExists]) {
+						i.accepted
+							? (ratioArr[userExists].wCount += 1)
+							: (ratioArr[userExists].lCount += 1);
+					} else {
+						if (user) {
 							ratioArr.push({
 								userID: i.userID,
 								username: user.username,
 								discriminator: user.discriminator,
 								wCount: i.accepted ? 1 : 0,
 								lCount: i.accepted ? 0 : 1,
-							})
+							});
 						}
 					}
 				}
 
 				ratioArr.sort((a, b) => b.wCount - a.wCount);
 
-				const guild = await interaction.client.guilds.cache.get(interaction.guildId!);
+				const guild = await interaction.client.guilds.cache.get(
+					interaction.guildId!
+				);
 
 				const winsEmbed = new EmbedBuilder()
 					.setColor(`${PEROXAAN_COLOR}`)
-					.setTitle(`Here's the top 10 W takers from the ${guild?.name} server!`)
+					.setTitle(
+						`Here's the top 10 W takers from the ${guild?.name} server! 🏆`
+					)
 					.setTimestamp(new Date());
 
-				for (let i=0; i < 11; i++) {
-					if(ratioArr[i]) {
+				for (let i = 0; i < 11; i++) {
+					if (ratioArr[i]) {
 						winsEmbed.addFields([
 							{
-								name: `#${i+1} - ${ratioArr[i].username}#${ratioArr[i].discriminator}`,
-								value: `W Count: ${ratioArr[i].wCount}`
-							}
+								name: `**#${i + 1}** - ${
+									ratioArr[i].username
+								}#${ratioArr[i].discriminator}`,
+								value: `W Count: ${ratioArr[i].wCount}`,
+							},
 						]);
 					}
 				}
 
 				await interaction.reply({
-					embeds: [
-						winsEmbed
-					]
+					embeds: [winsEmbed],
 				});
-			}
-			else {
+			} else {
 				const allGuildLs = await sharedPrismaClient.ratios.findMany({
 					where: {
 						guildID: interaction.guildId!,
@@ -166,50 +174,57 @@ export const Leaderboard: ChatCommand = {
 				for (const i of allGuildLs) {
 					const user = interaction.client.users.cache.get(i.userID);
 
-					let userExists = ratioArr.findIndex(user => user.userID === i.userID);
+					let userExists = ratioArr.findIndex(
+						(user) => user.userID === i.userID
+					);
 
-					if(ratioArr[userExists]) {
-						i.accepted ? ratioArr[userExists].wCount += 1 : ratioArr[userExists].lCount += 1;
-					}
-					else {
-						if(user) {
+					if (ratioArr[userExists]) {
+						i.accepted
+							? (ratioArr[userExists].wCount += 1)
+							: (ratioArr[userExists].lCount += 1);
+					} else {
+						if (user) {
 							ratioArr.push({
 								userID: i.userID,
 								username: user.username,
 								discriminator: user.discriminator,
 								wCount: i.accepted ? 1 : 0,
 								lCount: i.accepted ? 0 : 1,
-							})
+							});
 						}
 					}
 				}
 
 				ratioArr.sort((a, b) => a.wCount - b.wCount);
 
-				const guild = await interaction.client.guilds.cache.get(interaction.guildId!);
+				const guild = await interaction.client.guilds.cache.get(
+					interaction.guildId!
+				);
 
 				const lossesEmbed = new EmbedBuilder()
 					.setColor(`${PEROXAAN_COLOR}`)
-					.setTitle(`Here's the top 10 L takers from the ${guild?.name} server!`)
+					.setTitle(
+						`Here's the top 10 L takers from the ${guild?.name} server! ❌`
+					)
 					.setTimestamp(new Date());
 
-				for (let i=0; i < 11; i++) {
-					if(ratioArr[i]) {
+				for (let i = 0; i < 11; i++) {
+					if (ratioArr[i]) {
 						lossesEmbed.addFields([
 							{
-								name: `#${i+1} - ${ratioArr[i].username}#${ratioArr[i].discriminator}`,
-								value: `L Count: ${ratioArr[i].lCount}`
-							}
+								name: `**#${i + 1}** - ${
+									ratioArr[i].username
+								}#${ratioArr[i].discriminator}`,
+								value: `L Count: ${ratioArr[i].lCount}`,
+							},
 						]);
 					}
 				}
 
 				await interaction.reply({
-					embeds: [
-						lossesEmbed
-					]
+					embeds: [lossesEmbed],
 				});
 			}
 		}
-	}
-}
+	},
+};
