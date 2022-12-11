@@ -1,8 +1,5 @@
 import { ChatCommand } from "../../types/Discord";
-import {
-	ApplicationCommandOptionType,
-	ApplicationCommandType,
-} from "discord.js";
+import { ApplicationCommandOptionType, ApplicationCommandType } from "discord.js";
 import { ownerOnly } from "../../inhibitors/ownerOnly";
 import { promises as fs } from "fs";
 
@@ -33,7 +30,16 @@ export const Rig: ChatCommand = {
 		const odds = Number(interaction.options.get("odds")?.value!);
 
 		// Get file and ensure the ID isn't there yet
-		let oddsFile = await fs.readFile("./src/store/kv/odds", "utf-8");
+		let oddsFile: string = "";
+
+		try {
+			oddsFile = await fs.readFile("./src/store/kv/odds", "utf-8")
+		}
+		catch(e) {
+			await fs.writeFile("./src/store/kv/odds", "");
+			oddsFile = await fs.readFile("./src/store/kv/odds", "utf-8")
+		}
+
 
 		const oddsFileLines = oddsFile.split("\n");
 		let found: boolean = false;

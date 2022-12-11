@@ -29,9 +29,10 @@ export const handleMessageCreate = async (message: Message) => {
 
 		if (isRatio) {
 			// No ratio 😔
+
 			await message.react("👎");
 			await message.reply({
-				content: DENIED_PNG,
+				content: DENIED_PNG
 			});
 
 			// Create ratio log
@@ -70,9 +71,10 @@ export const handleMessageCreate = async (message: Message) => {
 			});
 		} else {
 			// Ratio 😄
+
 			await message.react("👍");
 			await message.reply({
-				content: ACCEPTED_PNG,
+				content: ACCEPTED_PNG
 			});
 
 			// Create ratio log for leaderboard
