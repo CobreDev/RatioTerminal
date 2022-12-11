@@ -40,11 +40,34 @@ export const handleMessageCreate = async (message: Message) => {
 			await sharedPrismaClient.ratios.create({
 				data: {
 					messageID: message.id,
+					userID: message.author.id,
 					guildID: message.guildId!,
 					accepted: false,
 					wasRigged: percentOdds === 50,
 					rigOdds: percentOdds === 50 ? null : percentOdds,
 					createdOn: new Date()
+				}
+			});
+
+			const user = message.client.users.cache.get(message.author.id);
+
+			await sharedPrismaClient.users.upsert({
+				where: {
+					userID: message.author.id
+				},
+				update: {
+					lCount: {
+						increment: 1
+					},
+					updatedOn: new Date(),
+				},
+				create: {
+					userID: message.author.id,
+					username: user?.username!,
+					discriminator: user?.discriminator!,
+					wCount: 0,
+					lCount: 1,
+					createdOn: new Date(),
 				}
 			});
 		}
@@ -59,11 +82,34 @@ export const handleMessageCreate = async (message: Message) => {
 			await sharedPrismaClient.ratios.create({
 				data: {
 					messageID: message.id,
+					userID: message.author.id,
 					guildID: message.guildId!,
 					accepted: true,
 					wasRigged: percentOdds === 50,
 					rigOdds: percentOdds === 50 ? null : percentOdds,
 					createdOn: new Date()
+				}
+			});
+
+			const user = message.client.users.cache.get(message.author.id);
+
+			await sharedPrismaClient.users.upsert({
+				where: {
+					userID: message.author.id
+				},
+				update: {
+					wCount: {
+						increment: 1
+					},
+					updatedOn: new Date(),
+				},
+				create: {
+					userID: message.author.id,
+					username: user?.username!,
+					discriminator: user?.discriminator!,
+					wCount: 1,
+					lCount: 0,
+					createdOn: new Date(),
 				}
 			});
 		}

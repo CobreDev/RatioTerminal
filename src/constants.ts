@@ -8,3 +8,5 @@ export const OWNERS_IDS = [
 	"275775739998240769",
 	"622228854064414721",
 ]
+
+export const PEROXAAN_COLOR = `#FE6C8B`;

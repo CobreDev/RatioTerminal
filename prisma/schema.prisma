@@ -21,4 +21,15 @@ model ratios {
   wasRigged Boolean
   rigOdds   Int?     @db.SmallInt
   createdOn DateTime @db.Timestamptz(6)
+  userID    String   @db.VarChar
+}
+
+model users {
+  userID        String    @id @db.VarChar
+  username      String    @db.VarChar
+  discriminator String    @db.VarChar
+  wCount        BigInt    @default(0)
+  lCount        BigInt    @default(0)
+  createdOn     DateTime  @db.Timestamptz(6)
+  updatedOn     DateTime? @db.Timestamptz(6)
 }
