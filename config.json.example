@@ -1,8 +1,0 @@
-{
-	"token": "",
-	"triggers": ["ratio", "counter"],
-	"userChances": {
-		"user-id-1": 100,
-		"user-id-2": 50
-	}
-}

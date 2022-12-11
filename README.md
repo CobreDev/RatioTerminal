@@ -3,8 +3,8 @@
 Accepts or Declines your ratios in Discord.
 
 -   🎲 **Rig the odds** &mdash; configure the chances for each user, down to the percent.
--   (Coming Soon) 📈 **Track your stats** &mdash; see your total accepted and declined ratios.
--   (Coming Soon) 🏆 **Climb the leaderboards** &mdash; compete against others, per-guild or globally.
+-   📈 **Track your stats** &mdash; see your total accepted and declined ratios.
+-   🏆 **Climb the leaderboards** &mdash; compete against others, per-guild or globally.
 
 ## 📜 License
 
