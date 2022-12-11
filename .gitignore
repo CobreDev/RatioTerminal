@@ -6,6 +6,9 @@
 **/dist/
 **/node_modules/
 
+# :pepesmile:
+odds
+
 # Logs
 logs
 *.log
