@@ -2,6 +2,8 @@ import { Client, ActivityType } from "discord.js";
 import { IS_DEV } from "./constants";
 import { chatCommandsMap, messageCommandsMap, userCommandsMap } from "./commands";
 import { handleInteraction } from "./services/events/interaction";
+import { createSharedPrismaClient } from "./helpers/Prisma/sharedClient";
+import { handleMessageCreate } from "./services/events/messageCreate";
 
 const client = new Client({
 	intents: [
@@ -45,10 +47,13 @@ client.on("ready", async () => {
 			...userCommandsMap.values()
 		])
 	}
+
+	await createSharedPrismaClient();
 });
 
 client.on("interactionCreate", handleInteraction);
 
+client.on("messageCreate", handleMessageCreate);
 (async () => {
 	await client.login(process.env.DISCORD_TOKEN)
 })();

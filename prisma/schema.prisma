@@ -1,0 +1,24 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model userConfigs {
+  userID    String    @id @db.VarChar
+  odds      Int       @db.SmallInt
+  createdAt DateTime  @db.Timestamptz(6)
+  updatedAt DateTime? @db.Timestamptz(6)
+}
+
+model ratios {
+  messageID String   @id @db.VarChar
+  guildID   String   @db.VarChar
+  accepted  Boolean
+  wasRigged Boolean
+  rigOdds   Int?     @db.SmallInt
+  createdOn DateTime @db.Timestamptz(6)
+}
