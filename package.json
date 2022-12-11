@@ -4,7 +4,7 @@
   "description": "ratio",
   "main": "index.js",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development ts-node-dev src/index.ts",
+    "dev": "cross-env NODE_ENV=development ts-node-dev --exit-child src/index.ts",
     "build": "tsc",
     "start": "cross-env NODE_ENV=production node ./dist",
     "lint": "eslint .",

@@ -94,6 +94,10 @@ export async function handleMessageInteraction(
 		}
 		await command.run(interaction);
 	} catch (e: any) {
+		await interaction.reply({
+			content: `${e.message}`,
+			ephemeral: true
+		});
 		console.log(e);
 	}
 }

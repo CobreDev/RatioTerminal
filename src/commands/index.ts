@@ -1,6 +1,7 @@
 import { ChatCommand, InteractionButtonCommand, MessageCommand, UserCommand } from "../types/Discord";
+import { Rig } from "./admin/rig";
 
-export const chatCommands: ChatCommand[] = [];
+export const chatCommands: ChatCommand[] = [Rig];
 
 export const messageCommands: MessageCommand[] = [];
 

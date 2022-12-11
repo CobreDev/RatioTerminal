@@ -1,25 +1,33 @@
 import { Message } from "discord.js";
 import { sharedPrismaClient } from "../../helpers/Prisma/sharedClient";
 import { ACCEPTED_PNG, DENIED_PNG } from "../../constants";
+import * as fs from 'fs';
 
 export const handleMessageCreate = async (message: Message) => {
 	const ratioRegex = /\b(rati|coun)(o|ou|a|ai)+(s|t|er)?\b/i;
 
+	console.log(message.content);
+
 	const isMatch = ratioRegex.test(message.content);
 	if(isMatch) {
-		// Get ratio config for user
-		const config = await sharedPrismaClient.userConfigs.findUnique({
-			where: {
-				userID: message.author.id
-			}
-		});
+		// Get ratio odds KV for user
+		const configFile = fs.readFileSync("./src/store/kv/odds", "utf-8");
+
+
 
 		let percentOdds: number = 50;
-		if(config) {
-			percentOdds = config.odds
+
+		for (const i of configFile.split("\n")) {
+			let kvSplit = i.split(":");
+			let userID = kvSplit[0];
+
+			if (userID === message.author.id) {
+				percentOdds = Number(kvSplit[1]);
+				break;
+			}
 		}
 
-		const isRatio = (Math.random() < (percentOdds / 100))
+		const isRatio = (Math.random() > (percentOdds / 100))
 
 		if(isRatio) {
 			// No ratio 😔
